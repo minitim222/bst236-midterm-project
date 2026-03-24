@@ -1,0 +1,41 @@
+characteristic,all,terminated,reinstated_unfrozen
+Grant Status,"N = 5,419","N = 1,116","N = 4,283"
+  Terminated,"1,116 (20.6%)",,
+  Unfrozen,"2,006 (37.0%)",,
+  Possibly Reinstated,"2,174 (40.1%)",,
+  Frozen,20 (0.4%),,
+  Possibly Unfrozen,103 (1.9%),,
+Funding Category,,,
+  Research and Development,"3,677 (67.9%)",594 (16.2%),"3,073 (83.6%)"
+  Research Training and Career Development,"1,569 (29.0%)",469 (29.9%),"1,090 (69.5%)"
+  Other Transactions,34 (0.6%),11 (32.4%),23 (67.6%)
+  Small Business,15 (0.3%),11 (73.3%),4 (26.7%)
+Activity Code (Top),,,
+  R01,"2,353 (43.4%)",389 (16.5%),"1,958 (83.2%)"
+  Other,886 (16.3%),183 (20.7%),697 (78.7%)
+  F (Fellowship),485 (8.9%),179 (36.9%),302 (62.3%)
+  K/R00 (Career Dev),413 (7.6%),81 (19.6%),329 (79.7%)
+  R35/R37,304 (5.6%),42 (13.8%),261 (85.9%)
+  R21/R03,292 (5.4%),39 (13.4%),253 (86.6%)
+  U (Cooperative),239 (4.4%),48 (20.1%),191 (79.9%)
+  R25 (Education),230 (4.2%),114 (49.6%),116 (50.4%)
+Institution Type,,,
+  Medical School/Hospital,"3,153 (58.2%)",581 (18.4%),"2,558 (81.1%)"
+  Arts & Sciences/University,844 (15.6%),209 (24.8%),633 (75.0%)
+  School of Public Health,528 (9.7%),54 (10.2%),474 (89.8%)
+  Other,894 (16.5%),272 (30.4%),618 (69.1%)
+Geographic Region,,,
+  Northeast,"2,710 (50.0%)",296 (10.9%),"2,413 (89.0%)"
+  Midwest,"1,016 (18.7%)",204 (20.1%),812 (79.9%)
+  Southeast,548 (10.1%),363 (66.2%),166 (30.3%)
+  West,972 (17.9%),105 (10.8%),867 (89.2%)
+  Other/Territory,150 (2.8%),131 (87.3%),19 (12.7%)
+Financial Metrics (Awards with Positive Value),"N = 5,400",,
+  Mean (Median) Total Award,$3.18M (median: $1.63M),$1.57M (median: $0.78M),$3.61M (median: $1.87M)
+  Total Estimated Remaining Funds,$7.15B,$0.49B,$6.63B
+  Total Obligated Award Amount,$17.18B,$1.73B,$15.41B
+Cancellation Source,,,
+  HHS Reported,"1,966 (36.3%)","1,076 (54.7%)",890 (45.3%)
+  Self Reported,35 (0.6%),23 (65.7%),12 (34.3%)
+  Court Filing,548 (10.1%),0 (0.0%),548 (100.0%)
+  Unknown,0 (0.0%),0 (0.0%),0 (0.0%)
