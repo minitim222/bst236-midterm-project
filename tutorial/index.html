@@ -700,28 +700,32 @@
       <h2 style="color:var(--white);">Watch the full workflow in action</h2>
       <p style="color:#94a3b8;">A 7–8 minute screen recording — from an empty data folder to a compiled JAMA-style PDF.</p>
     </div>
-    <div class="reveal" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);box-shadow:0 8px 40px rgba(0,0,0,.5);">
-      <iframe
-        src="https://www.youtube.com/embed/Rdb_bQ0VkDM"
-        title="From Prompt to Paper — AI-Automated JAMA Workflow Tutorial"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-        style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:var(--radius);">
-      </iframe>
-    </div>
+    <!-- YouTube thumbnail link (embedding disabled on this video — click opens YouTube) -->
+    <a class="reveal" href="https://youtu.be/Rdb_bQ0VkDM" target="_blank" rel="noopener"
+       style="display:block;position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);text-decoration:none;">
+      <img src="https://img.youtube.com/vi/Rdb_bQ0VkDM/maxresdefault.jpg"
+           alt="Tutorial video thumbnail"
+           style="width:100%;display:block;border-radius:var(--radius);"
+           onerror="this.src='https://img.youtube.com/vi/Rdb_bQ0VkDM/hqdefault.jpg'">
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.35);">
+        <div style="width:72px;height:72px;background:var(--crimson);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 4px 24px rgba(185,28,28,.6);margin-bottom:14px;">▶</div>
+        <div style="color:var(--white);font-weight:700;font-size:1rem;">Watch on YouTube</div>
+        <div style="color:#94a3b8;font-size:.82rem;margin-top:4px;">8 min · youtu.be/Rdb_bQ0VkDM</div>
+      </div>
+    </a>
     <div class="reveal" style="margin-top:32px;">
-      <div style="font-size:.8rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;text-align:center;">Video chapters (from director script)</div>
+      <div style="font-size:.8rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;text-align:center;">Video chapters</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;">
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">0:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Hook — split-screen demo</div></div>
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">0:30</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">The Problem — 6 steps</div></div>
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">1:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Setup — pip install</div></div>
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">1:45</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">The one prompt</div></div>
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">2:15</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Architecture — tree</div></div>
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">3:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">5-stage pipeline</div></div>
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">5:30</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Real results + figures</div></div>
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">6:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Troubleshooting fixes</div></div>
-        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">6:40</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Wrap-up</div></div>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=0"   target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">0:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Hook</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=44"  target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">0:44</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">The Problem</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=82"  target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">1:22</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Setup — 3 steps</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=114" target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">1:54</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">The one prompt</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=140" target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">2:20</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Architecture</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=200" target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">3:20</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">5-stage pipeline</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=256" target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">4:16</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Stage 3 — Analysis</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=346" target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">5:46</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Results + outputs</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=388" target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">6:28</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Troubleshooting</div></a>
+        <a href="https://youtu.be/Rdb_bQ0VkDM?t=432" target="_blank" style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.05)'"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">7:12</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Wrap-up</div></a>
       </div>
     </div>
   </div>
