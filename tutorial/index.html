@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Prompt to Paper: AI-Automated JAMA Workflow Tutorial</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --crimson: #b91c1c; --crimson-light: #ef4444;
+      --navy: #0f172a; --slate: #1e293b; --mid: #334155; --muted: #64748b;
+      --light: #f1f5f9; --white: #ffffff;
+      --accent: #0ea5e9; --gold: #f59e0b; --green: #10b981;
+      --radius: 12px; --shadow: 0 4px 24px rgba(0,0,0,.14);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--light); color: var(--slate); line-height: 1.7; }
+    a { color: var(--accent); text-decoration: none; }
+    .container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 72px 0; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+      color: var(--white); padding: 80px 24px 100px; text-align: center; overflow: hidden; position: relative;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-badge { display:inline-block; background:rgba(239,68,68,.2); color:#fca5a5; border:1px solid rgba(239,68,68,.4); padding:4px 16px; border-radius:999px; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; margin-bottom:20px; animation:fadeDown .6s ease both; }
+    .hero h1 { font-size: clamp(2rem,5vw,3.4rem); font-weight:800; line-height:1.15; margin-bottom:20px; animation:fadeDown .7s .1s ease both; }
+    .hero h1 span { color: var(--crimson-light); }
+    .hero p { font-size:1.15rem; color:#94a3b8; max-width:620px; margin:0 auto 36px; animation:fadeDown .7s .2s ease both; }
+    .hero-cta { display:inline-flex; align-items:center; gap:8px; background:var(--crimson); color:var(--white); padding:14px 32px; border-radius:999px; font-weight:700; font-size:1rem; box-shadow:0 4px 20px rgba(185,28,28,.5); transition:transform .2s,box-shadow .2s; animation:fadeDown .7s .3s ease both; }
+    .hero-cta:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(185,28,28,.5); text-decoration:none; }
+    .hero-stats { display:flex; justify-content:center; gap:40px; margin-top:56px; flex-wrap:wrap; animation:fadeDown .7s .4s ease both; }
+    .stat-num { font-size:2.2rem; font-weight:800; }
+    .stat-label { font-size:.85rem; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; }
+
+    /* ── Section headers ── */
+    .section-header { text-align:center; margin-bottom:48px; }
+    .section-label { display:inline-block; font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; color:var(--crimson); font-weight:700; margin-bottom:10px; }
+    .section-header h2 { font-size:clamp(1.6rem,3vw,2.2rem); font-weight:800; color:var(--navy); }
+    .section-header p { color:var(--muted); margin-top:12px; max-width:560px; margin-inline:auto; }
+
+    /* ── Terminal ── */
+    .term-wrap { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin: 20px 0; }
+    .term-bar { background: #1e2433; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+    .term-dot { width:12px; height:12px; border-radius:50%; }
+    .term-dot.r { background:#ff5f57; }
+    .term-dot.y { background:#febc2e; }
+    .term-dot.g { background:#27c83f; }
+    .term-title { color:#6b7280; font-size:.8rem; font-family:monospace; margin-left:8px; }
+    .term-body { background:#0d1117; padding:20px 24px; font-family:'Cascadia Code','Fira Code',monospace; font-size:.82rem; line-height:1.9; min-height:80px; }
+    .term-line { display:block; opacity:0; white-space:pre-wrap; word-break:break-all; transition: opacity .15s; }
+    .term-line.visible { opacity:1; }
+    .term-line.cmd { color:#67e8f9; }
+    .term-line.out { color:#94a3b8; }
+    .term-line.ok  { color:#86efac; }
+    .term-line.warn{ color:#fde68a; }
+    .term-line.err { color:#f87171; }
+    .term-line.dim { color:#475569; }
+    .term-prompt { color:#10b981; }
+
+    /* ── Quickstart cards ── */
+    .qs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
+    .qs-card { border:1px solid #e2e8f0; border-radius:var(--radius); padding:24px; position:relative; transition:transform .2s,box-shadow .2s; background:var(--white); }
+    .qs-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+    .qs-num { font-size:3rem; font-weight:900; color:#e2e8f0; position:absolute; top:12px; right:16px; line-height:1; }
+    .qs-icon { font-size:1.8rem; margin-bottom:10px; }
+    .qs-card h3 { font-size:1rem; font-weight:700; color:var(--navy); margin-bottom:6px; }
+    .qs-card p { font-size:.9rem; color:var(--muted); }
+    code { font-family:'Cascadia Code','Fira Code',monospace; font-size:.88em; background:#f1f5f9; padding:2px 6px; border-radius:4px; color:var(--crimson); }
+    .prompt-box { background:var(--navy); border-radius:var(--radius); padding:28px 32px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-top:24px; }
+    .cursor-blink { display:inline-block; width:3px; height:1.3em; background:var(--accent); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:2px; }
+    .prompt-prefix { color:#10b981; font-weight:700; font-family:monospace; }
+    .prompt-text { color:var(--white); font-family:monospace; font-size:1.05rem; }
+
+    /* ── Architecture ── */
+    .arch-diagram { background:var(--navy); border-radius:var(--radius); padding:32px; font-family:monospace; font-size:.88rem; color:#94a3b8; line-height:1.9; box-shadow:var(--shadow); overflow-x:auto; }
+    .arch-diagram .kf { color:#67e8f9; }
+    .arch-diagram .cm { color:#475569; }
+    .arch-diagram .hl { color:#86efac; font-weight:700; }
+
+    /* ── Pipeline stages ── */
+    .pipeline-track { display:flex; flex-direction:column; gap:0; position:relative; }
+    .pipeline-track::before { content:''; position:absolute; left:28px; top:40px; bottom:40px; width:2px; background:linear-gradient(to bottom,var(--crimson),var(--accent)); }
+    .stage-card { display:grid; grid-template-columns:56px 1fr; gap:20px; align-items:flex-start; background:var(--white); border-radius:var(--radius); padding:24px 28px; margin-bottom:16px; border-left:4px solid transparent; box-shadow:0 1px 4px rgba(0,0,0,.06); transition:border-color .2s; opacity:0; transform:translateX(-20px); }
+    .stage-card.visible { animation:slideIn .5s ease forwards; }
+    .stage-card:hover { border-left-color:var(--crimson); }
+    .stage-dot { width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; position:relative; z-index:1; flex-shrink:0; }
+    .s1 .stage-dot { background:#fef3c7; box-shadow:0 0 0 4px #fff,0 0 0 6px var(--gold); }
+    .s2 .stage-dot { background:#dcfce7; box-shadow:0 0 0 4px #fff,0 0 0 6px var(--green); }
+    .s3 .stage-dot { background:#dbeafe; box-shadow:0 0 0 4px #fff,0 0 0 6px var(--accent); }
+    .s4 .stage-dot { background:#f3e8ff; box-shadow:0 0 0 4px #fff,0 0 0 6px #9333ea; }
+    .s5 .stage-dot { background:#fee2e2; box-shadow:0 0 0 4px #fff,0 0 0 6px var(--crimson); }
+    .stage-body h3 { font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:4px; }
+    .stage-meta { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+    .stage-time { font-size:.75rem; font-weight:600; padding:2px 10px; border-radius:999px; background:#f1f5f9; color:var(--muted); }
+    .stage-body p { font-size:.92rem; color:var(--muted); margin-bottom:12px; }
+    .output-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+    .chip { font-size:.78rem; font-family:monospace; background:#f8fafc; border:1px solid #e2e8f0; padding:3px 10px; border-radius:6px; color:var(--mid); }
+
+    /* ── Data table ── */
+    .data-table { width:100%; border-collapse:collapse; font-family:monospace; font-size:.8rem; margin-top:12px; }
+    .data-table th { background:#1e293b; color:#94a3b8; padding:6px 10px; text-align:left; font-weight:600; }
+    .data-table td { padding:5px 10px; border-bottom:1px solid #1e2d3d; color:#94a3b8; }
+    .data-table tr:hover td { background:#1a2333; }
+    .data-table .val { color:#86efac; }
+    .data-table .num { color:#67e8f9; }
+    .data-table .pct { color:#fde68a; }
+
+    /* ── Figures grid ── */
+    .fig-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+    .fig-card { background:var(--white); border-radius:var(--radius); overflow:hidden; border:1px solid #e2e8f0; transition:transform .2s,box-shadow .2s; }
+    .fig-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+    .fig-card img { width:100%; display:block; background:#f8fafc; }
+    .fig-caption { padding:10px 14px; font-size:.8rem; color:var(--muted); font-weight:600; }
+
+    /* ── Results panel ── */
+    .results-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:640px) { .results-grid { grid-template-columns:1fr; } }
+    .result-card { background:var(--white); border-radius:var(--radius); padding:20px; border:1px solid #e2e8f0; }
+    .result-card h4 { font-size:.9rem; font-weight:700; color:var(--navy); margin-bottom:12px; }
+    .or-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:.83rem; }
+    .or-label { color:var(--muted); width:130px; flex-shrink:0; }
+    .or-bar-wrap { flex:1; background:#f1f5f9; border-radius:999px; height:8px; }
+    .or-bar { height:8px; border-radius:999px; background:var(--accent); transition: width 1s ease; }
+    .or-bar.sig { background:var(--crimson); }
+    .or-val { color:var(--navy); font-weight:700; font-family:monospace; width:80px; text-align:right; font-size:.78rem; }
+
+    /* ── Timeline ── */
+    .timeline { position:relative; padding-left:32px; }
+    .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:#e2e8f0; }
+    .tl-item { position:relative; margin-bottom:28px; }
+    .tl-dot { position:absolute; left:-28px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--crimson); border:3px solid var(--white); box-shadow:0 0 0 2px var(--crimson); }
+    .tl-item h4 { font-size:.9rem; font-weight:700; color:var(--navy); margin-bottom:4px; }
+    .tl-item p { font-size:.88rem; color:var(--muted); }
+    .tl-files { margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; }
+    .file-tag { font-family:monospace; font-size:.78rem; background:var(--white); border:1px solid #e2e8f0; border-radius:6px; padding:3px 9px; color:var(--mid); }
+
+    /* ── Troubleshooting ── */
+    .trouble-card { border-radius:var(--radius); border:1px solid #e2e8f0; overflow:hidden; transition:box-shadow .2s; margin-bottom:12px; }
+    .trouble-card:hover { box-shadow:var(--shadow); }
+    .trouble-header { display:flex; align-items:center; gap:12px; padding:16px 20px; background:#fafafa; }
+    .trouble-icon { font-size:1.3rem; }
+    .trouble-header h4 { font-size:.95rem; font-weight:700; color:var(--navy); }
+    .trouble-body { padding:16px 20px; font-size:.9rem; color:var(--muted); }
+    .fix-box { margin-top:10px; background:#f0fdf4; border-left:3px solid var(--green); padding:10px 14px; border-radius:0 8px 8px 0; font-size:.88rem; color:#166534; }
+
+    /* ── Video ── */
+    .video-placeholder { background:rgba(255,255,255,.05); border:2px dashed rgba(255,255,255,.15); border-radius:var(--radius); padding:60px 24px; text-align:center; color:#94a3b8; }
+    .play-btn { display:inline-flex; align-items:center; justify-content:center; width:72px; height:72px; background:var(--crimson); border-radius:50%; font-size:1.6rem; margin-bottom:20px; box-shadow:0 0 0 0 rgba(185,28,28,.4); animation:pulse 2s infinite; text-decoration:none; }
+
+    /* ── Info box ── */
+    .info-box { background:var(--white); border-left:4px solid var(--accent); border-radius:0 var(--radius) var(--radius) 0; padding:16px 20px; margin:16px 0; font-size:.92rem; }
+    .info-box strong { color:var(--navy); }
+
+    /* ── Animations ── */
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes slideIn  { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+    @keyframes blink    { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes pulse    { 0%{box-shadow:0 0 0 0 rgba(185,28,28,.5)} 70%{box-shadow:0 0 0 18px rgba(185,28,28,0)} 100%{box-shadow:0 0 0 0 rgba(185,28,28,0)} }
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease,transform .6s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">BST236 Midterm · March 2026</div>
+    <h1>From <span>Prompt</span> to Paper<br>in 30 Minutes</h1>
+    <p>One AI prompt turns a public-health dataset into a JAMA-style paper — automatically, with zero manual writing.</p>
+    <a href="#problem" class="hero-cta">Start the Tutorial ↓</a>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Prompt</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Pipeline Stages</div></div>
+      <div class="stat"><div class="stat-num">5,419</div><div class="stat-label">Records Analysed</div></div>
+      <div class="stat"><div class="stat-num">$17B</div><div class="stat-label">Funding Tracked</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ THE PROBLEM ════════════════════════════════════ -->
+<section id="problem" style="background:var(--navy);color:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label" style="color:#f87171;">😓 The Problem</div>
+      <h2 style="color:var(--white);">Writing a paper manually is a multi-step nightmare</h2>
+      <p style="color:#94a3b8;">Every step must happen in sequence. One wrong step breaks everything downstream — and you have 90 minutes.</p>
+    </div>
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:36px;">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:18px;display:flex;gap:12px;">
+        <span style="font-size:1.3rem;">❌</span><div><strong style="color:var(--white);display:block;margin-bottom:3px;">Understand an unfamiliar dataset</strong><span style="color:#4b5563;font-size:.88rem;">Unknown columns, types, encodings, merge keys.</span></div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:18px;display:flex;gap:12px;">
+        <span style="font-size:1.3rem;">❌</span><div><strong style="color:var(--white);display:block;margin-bottom:3px;">Formulate a valid research question</strong><span style="color:#4b5563;font-size:.88rem;">Requires domain knowledge and JAMA-style framing.</span></div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:18px;display:flex;gap:12px;">
+        <span style="font-size:1.3rem;">❌</span><div><strong style="color:var(--white);display:block;margin-bottom:3px;">Run the statistical analysis</strong><span style="color:#4b5563;font-size:.88rem;">Write, debug, and run a full regression pipeline.</span></div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:18px;display:flex;gap:12px;">
+        <span style="font-size:1.3rem;">❌</span><div><strong style="color:var(--white);display:block;margin-bottom:3px;">Generate publication-quality figures</strong><span style="color:#4b5563;font-size:.88rem;">Match JAMA color palettes, fonts, and axis specs.</span></div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:18px;display:flex;gap:12px;">
+        <span style="font-size:1.3rem;">❌</span><div><strong style="color:var(--white);display:block;margin-bottom:3px;">Write every section in journal format</strong><span style="color:#4b5563;font-size:.88rem;">Abstract, Methods, Results, Discussion — strict rules.</span></div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:18px;display:flex;gap:12px;">
+        <span style="font-size:1.3rem;">❌</span><div><strong style="color:var(--white);display:block;margin-bottom:3px;">Find and cite real references</strong><span style="color:#4b5563;font-size:.88rem;">Search, format, and verify 25–35 BibTeX entries.</span></div>
+      </div>
+    </div>
+    <div class="reveal" style="background:linear-gradient(135deg,rgba(185,28,28,.2),rgba(14,165,233,.1));border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:24px 28px;text-align:center;">
+      <p style="font-size:1.15rem;color:var(--white);font-weight:700;">This workflow encodes all those decisions into a rule-driven multi-agent pipeline.</p>
+      <p style="color:#94a3b8;margin-top:6px;">You type one prompt. The agent does the rest.</p>
+      <a href="#quickstart" style="display:inline-block;margin-top:18px;background:var(--crimson);color:white;padding:11px 26px;border-radius:999px;font-weight:700;text-decoration:none;">See how ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ QUICKSTART ══════════════════════════════════════ -->
+<section id="quickstart" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">⚡ Quickstart</div>
+      <h2>Setup in 3 steps</h2>
+      <p>Everything you need before typing the one prompt.</p>
+    </div>
+
+    <div class="qs-grid reveal">
+      <div class="qs-card">
+        <div class="qs-num">1</div>
+        <div class="qs-icon">🐍</div>
+        <h3>Install Python deps</h3>
+        <p>Run <code>pip install -r workflow/requirements.txt</code> from the project root. 9 packages total.</p>
+      </div>
+      <div class="qs-card">
+        <div class="qs-num">2</div>
+        <div class="qs-icon">📁</div>
+        <h3>Drop in your data</h3>
+        <p>Place CSV / XLSX / MD files in <code>exam_paper/data/</code>. Include a <code>Data_Description.md</code>.</p>
+      </div>
+      <div class="qs-card">
+        <div class="qs-num">3</div>
+        <div class="qs-icon">🤖</div>
+        <h3>Open Cursor Agent mode</h3>
+        <p>Or Claude Code with <code>--dangerously-skip-permissions</code>. Both work identically.</p>
+      </div>
+    </div>
+
+    <!-- pip install animated terminal -->
+    <div class="term-wrap reveal" style="margin-top:28px;">
+      <div class="term-bar">
+        <div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div>
+        <div class="term-title">zsh — project root — pip install -r workflow/requirements.txt</div>
+      </div>
+      <div class="term-body" id="term-pip">
+        <span class="term-line cmd"  data-delay="0"><span class="term-prompt">❯</span> pip install -r workflow/requirements.txt</span>
+        <span class="term-line out"  data-delay="600">Collecting pandas&gt;=2.0</span>
+        <span class="term-line out"  data-delay="850">  Downloading pandas-2.2.3-cp311-cp311-macosx_11_0_arm64.whl (11.5 MB)</span>
+        <span class="term-line out"  data-delay="1100">Collecting numpy&gt;=1.24</span>
+        <span class="term-line out"  data-delay="1300">  Downloading numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl (13.8 MB)</span>
+        <span class="term-line out"  data-delay="1500">Collecting matplotlib&gt;=3.7</span>
+        <span class="term-line out"  data-delay="1700">  Downloading matplotlib-3.9.2-cp311-cp311-macosx_11_0_arm64.whl (7.8 MB)</span>
+        <span class="term-line out"  data-delay="1900">Collecting statsmodels&gt;=0.14</span>
+        <span class="term-line out"  data-delay="2100">  Downloading statsmodels-0.14.4-cp311-cp311-macosx_11_0_arm64.whl (9.9 MB)</span>
+        <span class="term-line out"  data-delay="2300">Collecting linearmodels&gt;=5.0</span>
+        <span class="term-line out"  data-delay="2500">  Downloading linearmodels-5.4-cp311-cp311-macosx_11_0_arm64.whl (1.1 MB)</span>
+        <span class="term-line out"  data-delay="2700">Collecting seaborn, scipy, openpyxl, tabulate</span>
+        <span class="term-line dim"  data-delay="3000">Installing collected packages: numpy-1.26.4, pandas-2.2.3, matplotlib-3.9.2,</span>
+        <span class="term-line dim"  data-delay="3100">  statsmodels-0.14.4, scipy-1.13.1, seaborn-0.13.2, openpyxl-3.1.5,</span>
+        <span class="term-line dim"  data-delay="3200">  linearmodels-5.4, tabulate-0.9.0</span>
+        <span class="term-line ok"   data-delay="3600">Successfully installed 9 packages ✓</span>
+      </div>
+    </div>
+
+    <!-- The one prompt -->
+    <div class="prompt-box reveal" style="margin-top:28px;">
+      <div>
+        <div style="color:#64748b;font-size:.8rem;margin-bottom:6px;">Type exactly this in Cursor Agent / Claude Code at 1:45 in the video:</div>
+        <div>
+          <span class="prompt-prefix">❯ </span>
+          <span class="prompt-text">Write a paper using the data in the folder</span>
+          <span class="cursor-blink"></span>
+        </div>
+      </div>
+      <div style="margin-left:auto;color:#f59e0b;font-size:.85rem;font-weight:700;">→ paper.pdf in ~30 min</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ ARCHITECTURE ═══════════════════════════════════ -->
+<section id="architecture" style="background:var(--light);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">🏗 Architecture</div>
+      <h2>How the agent orchestrates itself</h2>
+      <p><code>AGENTS.md</code> is the orchestrator — it routes execution through 7 rule files and 2 pre-written scripts. You touch none of them.</p>
+    </div>
+    <div class="arch-diagram reveal">
+<pre><span class="hl">workflow/</span>
+  <span class="kf">AGENTS.md</span>                  <span class="cm">&lt;─ Master orchestrator (AI reads this first)</span>
+  rules/
+    <span class="kf">01-data-exploration.md</span>     <span class="cm">&lt;─ How to profile any dataset</span>
+    <span class="kf">02-research-question.md</span>    <span class="cm">&lt;─ JAMA-style question formulation</span>
+    <span class="kf">03-analysis-plan.md</span>        <span class="cm">&lt;─ Statistical method decision tree</span>
+    <span class="kf">04-visualization-style.md</span>  <span class="cm">&lt;─ JAMA figure styling spec</span>
+    <span class="kf">05-paper-writing.md</span>        <span class="cm">&lt;─ Section-by-section paper guide</span>
+    <span class="kf">06-references.md</span>           <span class="cm">&lt;─ BibTeX reference generation</span>
+    <span class="kf">07-quality-checklist.md</span>    <span class="cm">&lt;─ 40-point final review checklist</span>
+  scripts/
+    <span class="kf">data_profiler.py</span>           <span class="cm">&lt;─ Generic data scanner  ← pre-written</span>
+    <span class="kf">compile_latex.sh</span>           <span class="cm">&lt;─ LaTeX compilation helper ← pre-written</span>
+  templates/
+    <span class="kf">template.tex</span>               <span class="cm">&lt;─ JAMA Network Open LaTeX template</span>
+    <span class="kf">references.bib</span>             <span class="cm">&lt;─ Placeholder bibliography</span></pre>
+    </div>
+    <div class="info-box reveal" style="margin-top:20px;">
+      <strong>Key insight:</strong> The AI reads <code>AGENTS.md</code> first. That file tells it <em>which rule to apply at each stage</em>. The rules are the brain — you just provide the data.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PIPELINE ═══════════════════════════════════════ -->
+<section id="pipeline" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">⚙️ Pipeline</div>
+      <h2>The 5-stage automated pipeline</h2>
+      <p>Each stage runs sequentially and produces real, auditable output files you can inspect at any time.</p>
+    </div>
+
+    <div class="pipeline-track">
+
+      <!-- ── STAGE 1 ── -->
+      <div class="stage-card s1">
+        <div class="stage-dot">🔍</div>
+        <div class="stage-body">
+          <div class="stage-meta"><span class="stage-time">~3 min</span><h3>Stage 1 — Data Discovery</h3></div>
+          <p>The agent reads <code>Data_Description.md</code>, then runs <code>data_profiler.py</code> on every file — column names, data types, missing-value rates, date ranges, and cross-file merge keys — without you touching the data.</p>
+          <div class="term-wrap">
+            <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div><div class="term-title">python workflow/scripts/data_profiler.py exam_paper/data/</div></div>
+            <div class="term-body" id="term-profiler">
+              <span class="term-line cmd"  data-delay="0"><span class="term-prompt">❯</span> python workflow/scripts/data_profiler.py exam_paper/data/</span>
+              <span class="term-line out"  data-delay="400">Scanning directory: exam_paper/data/</span>
+              <span class="term-line out"  data-delay="650">Found 1 CSV file(s), 1 markdown file(s)</span>
+              <span class="term-line dim"  data-delay="900">────────────────────────────────────────────────────────</span>
+              <span class="term-line ok"   data-delay="1100">nih_terminations.csv</span>
+              <span class="term-line dim"  data-delay="1300">  Shape:       5,419 rows × 57 columns</span>
+              <span class="term-line dim"  data-delay="1450">  Date range:  2024-11-08 → 2026-02-28</span>
+              <span class="term-line dim"  data-delay="1600">  Missing:     total_award (9 rows), termination_date (0)</span>
+              <span class="term-line warn" data-delay="1800">  Key columns: appl_id, activity_code, org_state,</span>
+              <span class="term-line warn" data-delay="1900">               total_award, status, termination_date</span>
+              <span class="term-line dim"  data-delay="2100">  Top codes:   R01 (2,353) | F31 (409) | R21 (257)</span>
+              <span class="term-line dim"  data-delay="2250">  Top states:  NY (1,435) | MA (780) | CA (776)</span>
+              <span class="term-line ok"   data-delay="2500">Profile saved → exam_paper/data_summary.md ✓</span>
+            </div>
+          </div>
+          <div class="output-chips"><span class="chip">exam_paper/data_summary.md</span></div>
+        </div>
+      </div>
+
+      <!-- ── STAGE 2 ── -->
+      <div class="stage-card s2">
+        <div class="stage-dot">❓</div>
+        <div class="stage-body">
+          <div class="stage-meta"><span class="stage-time">~2 min</span><h3>Stage 2 — Research Question</h3></div>
+          <p>Based on the profile, the agent identifies exposure, outcome, population, and study design — then writes a formal JAMA-style objective a reviewer would accept.</p>
+          <div class="term-wrap">
+            <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div><div class="term-title">exam_paper/research_question.md — auto-generated</div></div>
+            <div class="term-body" id="term-rq" style="font-family:'Segoe UI',sans-serif;font-size:.82rem;line-height:1.8;">
+              <span class="term-line out"  data-delay="0">## Objective</span>
+              <span class="term-line ok"   data-delay="400">To characterize the geographic distribution, institutional</span>
+              <span class="term-line ok"   data-delay="500">concentration, scientific focus areas, and financial impact</span>
+              <span class="term-line ok"   data-delay="600">of NIH grant terminations in 2025, and to examine factors</span>
+              <span class="term-line ok"   data-delay="700">associated with permanent termination versus reinstatement</span>
+              <span class="term-line ok"   data-delay="800">among disrupted awards.</span>
+              <span class="term-line dim"  data-delay="1000"> </span>
+              <span class="term-line warn" data-delay="1100">Exposure:   NIH grant disruption status (2025)</span>
+              <span class="term-line warn" data-delay="1250">Outcome:    Permanent termination (binary)</span>
+              <span class="term-line warn" data-delay="1400">Population: 5,419 disrupted NIH awards</span>
+              <span class="term-line warn" data-delay="1550">Design:     Cross-sectional analysis</span>
+              <span class="term-line ok"   data-delay="1800">Saved → exam_paper/research_question.md ✓</span>
+            </div>
+          </div>
+          <div class="output-chips"><span class="chip">exam_paper/research_question.md</span></div>
+        </div>
+      </div>
+
+      <!-- ── STAGE 3 ── -->
+      <div class="stage-card s3">
+        <div class="stage-dot">📊</div>
+        <div class="stage-body">
+          <div class="stage-meta"><span class="stage-time">~10 min</span><h3>Stage 3 — Analysis + Visualization</h3></div>
+          <p>The agent writes a complete <code>analysis.py</code> from scratch, executes it, and verifies all outputs. Four publication-quality figures are generated with JAMA styling.</p>
+          <div class="term-wrap">
+            <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div><div class="term-title">python exam_paper/code/analysis.py</div></div>
+            <div class="term-body" id="term-analysis">
+              <span class="term-line cmd"  data-delay="0"><span class="term-prompt">❯</span> cd exam_paper &amp;&amp; python code/analysis.py</span>
+              <span class="term-line out"  data-delay="500">Loading data...</span>
+              <span class="term-line ok"   data-delay="900">Loaded 5,419 records with 57 columns</span>
+              <span class="term-line out"  data-delay="1200">Cleaning variables and constructing binary outcomes...</span>
+              <span class="term-line dim"  data-delay="1400">  Terminated:          1,116 (20.6%)</span>
+              <span class="term-line dim"  data-delay="1500">  Unfrozen:            2,006 (37.0%)</span>
+              <span class="term-line dim"  data-delay="1600">  Possibly Reinstated: 2,174 (40.1%)</span>
+              <span class="term-line out"  data-delay="1800">Building Table 1 (descriptive statistics)...</span>
+              <span class="term-line ok"   data-delay="2100">Table 1 saved → output/table1.csv  (42 rows) ✓</span>
+              <span class="term-line out"  data-delay="2400">Running logistic regression (n=5,400)...</span>
+              <span class="term-line ok"   data-delay="2800">Main model converged. Pseudo R²=0.168</span>
+              <span class="term-line dim"  data-delay="3000">  R01:       OR=2.05 (95% CI 1.16–3.61)  p=0.013</span>
+              <span class="term-line dim"  data-delay="3100">  R35/R37:   OR=3.32 (95% CI 1.54–7.17)  p=0.002</span>
+              <span class="term-line dim"  data-delay="3200">  Pub Health: OR=0.37 (95% CI 0.24–0.58) p&lt;0.001</span>
+              <span class="term-line ok"   data-delay="3500">Results saved → output/main_results.csv ✓</span>
+              <span class="term-line out"  data-delay="3700">Running subgroup analyses (5 groups)...</span>
+              <span class="term-line ok"   data-delay="4000">Subgroup results saved → output/subgroup_results.csv ✓</span>
+              <span class="term-line out"  data-delay="4200">Generating figures with JAMA styling...</span>
+              <span class="term-line ok"   data-delay="4600">Figure 1 → output/figures/figure1.pdf ✓</span>
+              <span class="term-line ok"   data-delay="4800">Figure 2 → output/figures/figure2.pdf ✓</span>
+              <span class="term-line ok"   data-delay="5000">Figure 3 → output/figures/figure3.pdf ✓</span>
+              <span class="term-line ok"   data-delay="5200">Figure 4 → output/figures/figure4.pdf ✓</span>
+              <span class="term-line ok"   data-delay="5500">All outputs verified. Analysis complete. ✓</span>
+            </div>
+          </div>
+
+          <!-- Real figures -->
+          <div style="margin-top:16px;">
+            <div style="font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">Generated figures — from actual exam run</div>
+            <div class="fig-grid">
+              <div class="fig-card">
+                <img src="../exam_paper/output/figures/figure1.png" alt="Figure 1" loading="lazy">
+                <div class="fig-caption">Figure 1 — Status Distribution</div>
+              </div>
+              <div class="fig-card">
+                <img src="../exam_paper/output/figures/figure2.png" alt="Figure 2" loading="lazy">
+                <div class="fig-caption">Figure 2 — Geographic Map</div>
+              </div>
+              <div class="fig-card">
+                <img src="../exam_paper/output/figures/figure3.png" alt="Figure 3" loading="lazy">
+                <div class="fig-caption">Figure 3 — Regression Odds Ratios</div>
+              </div>
+              <div class="fig-card">
+                <img src="../exam_paper/output/figures/figure4.png" alt="Figure 4" loading="lazy">
+                <div class="fig-caption">Figure 4 — Subgroup Analysis</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="output-chips" style="margin-top:12px;">
+            <span class="chip">code/analysis.py</span>
+            <span class="chip">output/table1.csv</span>
+            <span class="chip">output/main_results.csv</span>
+            <span class="chip">output/subgroup_results.csv</span>
+            <span class="chip">output/figures/figure1–4.pdf</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STAGE 4 ── -->
+      <div class="stage-card s4">
+        <div class="stage-dot">✍️</div>
+        <div class="stage-body">
+          <div class="stage-meta"><span class="stage-time">~10 min</span><h3>Stage 4 — Paper Writing + References</h3></div>
+          <p>The agent fills every section of the JAMA LaTeX template with exact numbers from the CSVs, then searches online for real papers and builds a 31-entry BibTeX bibliography.</p>
+          <div class="term-wrap">
+            <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div><div class="term-title">exam_paper/tex/paper.tex — writing in progress</div></div>
+            <div class="term-body" id="term-writing" style="font-family:'Segoe UI',sans-serif;font-size:.78rem;line-height:1.75;">
+              <span class="term-line dim"  data-delay="0">Filling template sections...</span>
+              <span class="term-line out"  data-delay="400">[Abstract]  5,419 awards; 20.6% permanently terminated.</span>
+              <span class="term-line out"  data-delay="550">            R35/R37 highest risk (OR 3.32, 95% CI 1.54–7.17;</span>
+              <span class="term-line out"  data-delay="650">            P=.002). Schools of Public Health lowest (OR 0.37;</span>
+              <span class="term-line out"  data-delay="750">            P&lt;.001). Total remaining funds: $7.15B.</span>
+              <span class="term-line ok"   data-delay="1000">[Methods]   Data, outcomes, covariates written ✓</span>
+              <span class="term-line ok"   data-delay="1200">[Results]   Table 1 + 4 figures inserted ✓</span>
+              <span class="term-line ok"   data-delay="1400">[Discussion] 6 paragraphs, 863 words ✓</span>
+              <span class="term-line dim"  data-delay="1700">Searching PubMed and Google Scholar for references...</span>
+              <span class="term-line ok"   data-delay="2200">references.bib: 31 entries written ✓</span>
+              <span class="term-line ok"   data-delay="2400">All \cite{} keys verified ✓</span>
+            </div>
+          </div>
+          <div class="output-chips"><span class="chip">tex/paper.tex</span><span class="chip">tex/references.bib (31 entries)</span></div>
+        </div>
+      </div>
+
+      <!-- ── STAGE 5 ── -->
+      <div class="stage-card s5">
+        <div class="stage-dot">✅</div>
+        <div class="stage-body">
+          <div class="stage-meta"><span class="stage-time">~5 min</span><h3>Stage 5 — Quality Review + Compile</h3></div>
+          <p>A 40-point checklist verifies every number before compilation. After passing, <code>pdflatex</code> runs three passes automatically — no manual intervention.</p>
+          <div class="term-wrap">
+            <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div><div class="term-title">workflow/scripts/compile_latex.sh paper.tex</div></div>
+            <div class="term-body" id="term-compile">
+              <span class="term-line out"  data-delay="0">Running 40-point quality checklist...</span>
+              <span class="term-line ok"   data-delay="300">✓ Abstract numbers match results tables</span>
+              <span class="term-line ok"   data-delay="500">✓ State + institution fixed effects present</span>
+              <span class="term-line ok"   data-delay="700">✓ Table 1 completeness (all required categories)</span>
+              <span class="term-line ok"   data-delay="900">✓ Citations count: 31 ≥ 20 minimum</span>
+              <span class="term-line ok"   data-delay="1100">✓ All 4 figures referenced in Results text</span>
+              <span class="term-line ok"   data-delay="1300">✓ Limitations paragraph present</span>
+              <span class="term-line ok"   data-delay="1500">✓ Discussion: 6 paragraphs (863 words)</span>
+              <span class="term-line dim"  data-delay="1800">Checklist passed (40/40). Compiling PDF...</span>
+              <span class="term-line cmd"  data-delay="2100"><span class="term-prompt">❯</span> pdflatex -interaction=nonstopmode paper.tex</span>
+              <span class="term-line dim"  data-delay="2600">  This is pdfTeX, Version 3.141592653 (TeX Live 2023)</span>
+              <span class="term-line dim"  data-delay="3100">bibtex paper.aux  →  34 citations processed</span>
+              <span class="term-line dim"  data-delay="3500">pdflatex (pass 2)  →  cross-references resolved</span>
+              <span class="term-line dim"  data-delay="3900">pdflatex (pass 3)  →  final pass</span>
+              <span class="term-line ok"   data-delay="4200">Output written: paper.pdf (10 pages, 487,302 bytes) ✓</span>
+              <span class="term-line ok"   data-delay="4400">Copied → exam_paper/output/paper.pdf ✓</span>
+            </div>
+          </div>
+          <div class="output-chips"><span class="chip" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534;font-weight:700;">exam_paper/output/paper.pdf ✓  (487 KB · 10 pages)</span></div>
+        </div>
+      </div>
+
+    </div><!-- /pipeline-track -->
+  </div>
+</section>
+
+<!-- ══════════════════════ REAL RESULTS ═══════════════════════════════════ -->
+<section id="results" style="background:var(--light);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">📈 Real Results</div>
+      <h2>Actual outputs from the exam run</h2>
+      <p>These are not mock data. Every number below was produced by this exact workflow on the live exam dataset.</p>
+    </div>
+
+    <div class="results-grid reveal">
+      <!-- Table 1 preview -->
+      <div class="result-card">
+        <h4>Table 1 — Sample characteristics (<em>n</em> = 5,419)</h4>
+        <div class="term-wrap" style="margin:0;">
+          <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div><div class="term-title">output/table1.csv (selected rows)</div></div>
+          <div class="term-body" style="padding:12px 16px;overflow-x:auto;">
+            <table class="data-table">
+              <thead><tr><th>Characteristic</th><th>All</th><th>Terminated</th><th>Reinstated</th></tr></thead>
+              <tbody>
+                <tr><td>N</td><td class="num">5,419</td><td class="num">1,116</td><td class="num">4,303</td></tr>
+                <tr><td>R&amp;D funding</td><td class="pct">67.9%</td><td class="pct">16.2%</td><td class="pct">83.6%</td></tr>
+                <tr><td>Training grants</td><td class="pct">29.0%</td><td class="pct">29.9%</td><td class="pct">69.5%</td></tr>
+                <tr><td>R01 grants</td><td class="pct">43.4%</td><td class="pct">16.5%</td><td class="pct">83.2%</td></tr>
+                <tr><td>R25 (Education)</td><td class="pct">4.2%</td><td class="pct">49.6%</td><td class="pct">50.4%</td></tr>
+                <tr><td>School of Pub. Health</td><td class="pct">9.7%</td><td class="pct">10.2%</td><td class="pct">89.8%</td></tr>
+                <tr><td>Northeast states</td><td class="pct">50.0%</td><td class="pct">10.9%</td><td class="pct">89.0%</td></tr>
+                <tr><td>Mean total award</td><td class="val">$3.18M</td><td class="val">$1.57M</td><td class="val">$3.61M</td></tr>
+                <tr><td>Total remaining</td><td class="val">$7.15B</td><td class="val">$0.49B</td><td class="val">$6.63B</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- OR forest plot -->
+      <div class="result-card">
+        <h4>Main logistic regression — OR for permanent termination</h4>
+        <div style="margin-top:8px;">
+          <div class="or-row"><span class="or-label">R35/R37 grant</span><div class="or-bar-wrap"><div class="or-bar sig" style="width:95%;"></div></div><span class="or-val" style="color:var(--crimson);">3.32 **</span></div>
+          <div class="or-row"><span class="or-label">R25 Education</span><div class="or-bar-wrap"><div class="or-bar sig" style="width:62%;"></div></div><span class="or-val" style="color:var(--crimson);">2.13 **</span></div>
+          <div class="or-row"><span class="or-label">R01 grant</span><div class="or-bar-wrap"><div class="or-bar sig" style="width:55%;"></div></div><span class="or-val" style="color:var(--crimson);">2.05 *</span></div>
+          <div class="or-row"><span class="or-label">Medical School</span><div class="or-bar-wrap"><div class="or-bar" style="width:32%;"></div></div><span class="or-val">1.26</span></div>
+          <div class="or-row"><span class="or-label">Award size ↑</span><div class="or-bar-wrap"><div class="or-bar" style="width:28%;background:#10b981;"></div></div><span class="or-val" style="color:#10b981;">0.65 ***</span></div>
+          <div class="or-row"><span class="or-label">Public Health School</span><div class="or-bar-wrap"><div class="or-bar" style="width:18%;background:#10b981;"></div></div><span class="or-val" style="color:#10b981;">0.37 ***</span></div>
+          <div style="margin-top:14px;font-size:.75rem;color:var(--muted);">
+            Reference group: Arts &amp; Sciences | n=5,400 | Pseudo R²=0.168<br>
+            * p&lt;.05 &nbsp; ** p&lt;.01 &nbsp; *** p&lt;.001 | State + institution fixed effects included
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subgroup results -->
+    <div class="result-card reveal" style="margin-top:20px;">
+      <h4>Subgroup analysis — OR for award size effect on termination risk, by institution type</h4>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:14px;">
+        <div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--accent);">0.64</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:4px;font-weight:600;">Research &amp; Development</div>
+          <div style="font-size:.7rem;color:var(--green);margin-top:2px;">n=3,832 | 16.7% terminated</div>
+        </div>
+        <div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--accent);">0.68</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:4px;font-weight:600;">Research Training</div>
+          <div style="font-size:.7rem;color:var(--green);margin-top:2px;">n=1,568 | 29.8% terminated</div>
+        </div>
+        <div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--accent);">0.66</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:4px;font-weight:600;">Medical Schools</div>
+          <div style="font-size:.7rem;color:var(--green);margin-top:2px;">n=3,149 | 18.4% terminated</div>
+        </div>
+        <div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--crimson);">0.59</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:4px;font-weight:600;">Schools of Public Health</div>
+          <div style="font-size:.7rem;color:var(--green);margin-top:2px;">n=526 | 10.3% terminated</div>
+        </div>
+        <div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;font-weight:800;color:var(--accent);">0.76</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:4px;font-weight:600;">Arts &amp; Sciences</div>
+          <div style="font-size:.7rem;color:var(--green);margin-top:2px;">n=840 | 24.9% terminated</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;font-size:.78rem;color:var(--muted);">All subgroup ORs significant at p&lt;0.001. Larger awards consistently associated with lower termination probability across all institution types.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ ARTIFACTS TIMELINE ════════════════════════════ -->
+<section id="artifacts" style="background:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">📂 Output Files</div>
+      <h2>What the pipeline produces — stage by stage</h2>
+      <p>Every file is plain text or a standard format. You can open and edit any of them at any time.</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--gold);box-shadow:0 0 0 2px var(--gold)"></div>
+        <h4>After Stage 1 — Data profile</h4>
+        <p>Structured markdown: 5,419 rows × 57 cols, date range 2024-11-08 → 2026-02-28, top activity codes, merge key <code>appl_id</code>.</p>
+        <div class="tl-files"><span class="file-tag">data_summary.md</span></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--green);box-shadow:0 0 0 2px var(--green)"></div>
+        <h4>After Stage 2 — Research question</h4>
+        <p>Formal JAMA objective, exposure/outcome definitions, subgroup analysis plan, and statistical method choice (logistic regression with fixed effects).</p>
+        <div class="tl-files"><span class="file-tag">research_question.md</span></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--accent);box-shadow:0 0 0 2px var(--accent)"></div>
+        <h4>After Stage 3 — Analysis + figures</h4>
+        <p>Complete 731-line analysis script. All numeric outputs ready for citation in-text. Four JAMA-styled figures in PDF and PNG.</p>
+        <div class="tl-files">
+          <span class="file-tag">code/analysis.py</span>
+          <span class="file-tag">output/table1.csv</span>
+          <span class="file-tag">output/main_results.csv</span>
+          <span class="file-tag">output/subgroup_results.csv</span>
+          <span class="file-tag">output/figures/figure1–4.pdf</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#9333ea;box-shadow:0 0 0 2px #9333ea"></div>
+        <h4>After Stage 4 — Paper + bibliography</h4>
+        <p>Full LaTeX paper with inline exact numbers, 31 real citations, complete BibTeX file. Discussion: 863 words across 6 paragraphs.</p>
+        <div class="tl-files">
+          <span class="file-tag">tex/paper.tex</span>
+          <span class="file-tag">tex/references.bib (31 entries)</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <h4>After Stage 5 — Final PDF</h4>
+        <p>Compiled, JAMA-formatted PDF. 10 pages. 40/40 quality checks passed. Ready for submission.</p>
+        <div class="tl-files">
+          <span class="file-tag" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534;font-weight:700;">exam_paper/output/paper.pdf ✓  (487 KB · 10 pages)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ TROUBLESHOOTING ═══════════════════════════════ -->
+<section id="troubleshooting" style="background:var(--light);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">🔧 Troubleshooting</div>
+      <h2>Three common failures — and their fixes</h2>
+    </div>
+    <div class="reveal">
+      <div class="trouble-card">
+        <div class="trouble-header"><span class="trouble-icon">📁</span><h4>Agent can't find the data folder</h4></div>
+        <div class="trouble-body">
+          The agent checks paths in order: user-provided → <code>exam_paper/data/</code> → <code>sample/data/</code>. If data is elsewhere, it silently fails.
+          <div class="fix-box">✅ Fix: Ensure files are in <code>exam_paper/data/</code> and a <code>Data_Description.md</code> is present at the same level.</div>
+        </div>
+      </div>
+      <div class="trouble-card">
+        <div class="trouble-header"><span class="trouble-icon">🐛</span><h4>analysis.py crashes with KeyError or NaN issues</h4></div>
+        <div class="trouble-body">
+          Survey data often encodes missing values as <code>-88</code> or <code>-99</code>. Without explicit remapping, the script treats them as real numbers and the model fails.
+          <div class="fix-box">✅ Fix: The agent retries automatically on the first crash and maps <code>-88</code> / <code>-99</code> to <code>NaN</code> before re-running. If it still fails, check <code>data_summary.md</code> for flagged sentinel values.</div>
+        </div>
+      </div>
+      <div class="trouble-card">
+        <div class="trouble-header"><span class="trouble-icon">📄</span><h4>LaTeX compile fails — missing package / undefined citation</h4></div>
+        <div class="trouble-body">
+          Missing <code>.bst</code> or <code>.sty</code> packages are the most common cause. Read the first error in <code>paper.log</code>, not the last.
+          <div class="fix-box">✅ Fix: Run <code>tlmgr install &lt;package_name&gt;</code> for whatever package is reported, then recompile with <code>bash workflow/scripts/compile_latex.sh paper.tex</code>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ VIDEO ══════════════════════════════════════════ -->
+<section id="video" style="background:linear-gradient(135deg,var(--navy) 0%,#1e3a5f 100%);color:var(--white);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label" style="color:#f87171;">🎬 Tutorial Video</div>
+      <h2 style="color:var(--white);">Watch the full workflow in action</h2>
+      <p style="color:#94a3b8;">A 7–8 minute screen recording — from an empty data folder to a compiled JAMA-style PDF.</p>
+    </div>
+    <div class="reveal" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);box-shadow:0 8px 40px rgba(0,0,0,.5);">
+      <iframe
+        src="https://www.youtube.com/embed/Rdb_bQ0VkDM"
+        title="From Prompt to Paper — AI-Automated JAMA Workflow Tutorial"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:var(--radius);">
+      </iframe>
+    </div>
+    <div class="reveal" style="margin-top:32px;">
+      <div style="font-size:.8rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;text-align:center;">Video chapters (from director script)</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;">
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">0:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Hook — split-screen demo</div></div>
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">0:30</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">The Problem — 6 steps</div></div>
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">1:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Setup — pip install</div></div>
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">1:45</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">The one prompt</div></div>
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">2:15</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Architecture — tree</div></div>
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">3:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">5-stage pipeline</div></div>
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">5:30</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Real results + figures</div></div>
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">6:00</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Troubleshooting fixes</div></div>
+        <div style="padding:14px 10px;background:rgba(255,255,255,.05);border-radius:var(--radius);text-align:center;"><div style="font-size:1.1rem;font-weight:800;color:var(--white);">6:40</div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px;">Wrap-up</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="background:var(--navy);color:#64748b;text-align:center;padding:40px 24px;font-size:.88rem;">
+  <p>BST236 Midterm Project · AI-Automated JAMA Workflow · March 2026</p>
+  <p style="margin-top:8px;"><a href="https://psantanna.com/claude-code-my-workflow/" style="color:#94a3b8;">Inspired by Pedro Sant'Anna's Claude Code workflow</a></p>
+</footer>
+
+<script>
+  // ── Scroll reveal ──
+  const revealObs = new IntersectionObserver(
+    es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.1 }
+  );
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  // ── Staggered stage card entrance ──
+  const stageObs = new IntersectionObserver(
+    es => es.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); }),
+    { threshold: 0.05 }
+  );
+  document.querySelectorAll('.stage-card').forEach(s => stageObs.observe(s));
+
+  // ── Terminal line-by-line animation ──
+  function animateTerm(termId) {
+    const body = document.getElementById(termId);
+    if (!body || body.dataset.played) return;
+    body.dataset.played = '1';
+    body.querySelectorAll('.term-line').forEach(line => {
+      const delay = parseInt(line.dataset.delay || 0);
+      setTimeout(() => line.classList.add('visible'), delay);
+    });
+  }
+
+  const termIds = ['term-pip', 'term-profiler', 'term-rq', 'term-analysis', 'term-writing', 'term-compile'];
+
+  const termObs = new IntersectionObserver(
+    es => es.forEach(e => { if (e.isIntersecting) animateTerm(e.target.id); }),
+    { threshold: 0.25 }
+  );
+
+  termIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) termObs.observe(el);
+  });
+</script>
+</body>
+</html>

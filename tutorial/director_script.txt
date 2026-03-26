@@ -1,0 +1,157 @@
+DIRECTOR SCRIPT
+From Prompt to Paper — AI-Automated JAMA Workflow
+Screen cues mapped to the voice-over script
+--------------------------------------------------
+Format:  WHEN YOU HEAR — the spoken trigger phrase
+         SCROLL TO     — which tutorial section / element
+         ACTION        — mouse or zoom move to do
+
+No timestamps. Scroll when you hear the trigger phrase, regardless of speed.
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 1
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "What if you could hand an AI a folder of data…"
+
+SCROLL TO:  HERO section — start here. Full screen on the title and the four
+            stat counters (1 Prompt / 5 Stages / 5,419 Records / $17B).
+
+ACTION:     Let the hero animate in. Do not scroll yet.
+            After "…walk away" cut to a SPLIT SCREEN:
+              LEFT  — Finder showing exam_paper/data/ folder
+              RIGHT — paper.pdf open in Preview
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 2
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "Writing a research paper under time pressure…"
+
+SCROLL TO:  PROBLEM section (dark navy background, six ❌ badges).
+
+ACTION:     Slow scroll down so each ❌ badge is visible as you name that step.
+            Pause with all six badges on screen at "EXTREMELY difficult."
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 3
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "Before running the workflow, there are three things to prepare."
+
+SCROLL TO:  QUICKSTART section — the three setup cards.
+
+ACTION:     Hover / zoom CARD 1 (Install Python deps) on "FIRST."
+            Shift to CARD 2 (Drop in your data) on "SECOND."
+            Shift to CARD 3 (Open Cursor Agent) on "THIRD."
+            After "ENTIRE setup" let the pip install terminal animation play.
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 4
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "Once your data is in place, type exactly this…"
+
+SCROLL TO:  Still in QUICKSTART — scroll down to the dark PROMPT BOX.
+            Zoom in so the prompt text fills most of the frame.
+
+ACTION:     Let the blinking cursor animation play while the prompt is spoken.
+            Hold on the prompt box through the pause after "in the folder."
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 5
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "Here is how the workflow is organized."
+
+SCROLL TO:  ARCHITECTURE section — the monospace file-tree diagram.
+
+ACTION:     Slowly mouse-highlight each item as it is mentioned in order:
+              AGENTS.md → rules/ (each file) → scripts/ → templates/
+            One file per sentence. Do not rush.
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 6
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "Now let us walk through each of the five stages."
+
+SCROLL TO:  PIPELINE section — the five stage cards.
+
+ACTION:     Hover / zoom each card as its stage is named:
+              "Stage ONE"   → Stage 1 card (🔍 Data Discovery)
+              "Stage TWO"   → Stage 2 card (❓ Research Question)
+              (pause on each card while its terminal animation plays)
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 7
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "Stage THREE — Analysis and Visualization."
+
+SCROLL TO:  Still in PIPELINE — Stage 3 card (📊) in focus.
+            Let the analysis.py terminal animation play fully.
+
+ACTION:     After the terminal finishes, briefly SPLIT SCREEN (~5 sec):
+              LEFT  — analysis.py open in VS Code
+              RIGHT — figure2.png or figure3.png open in Preview
+            Then return to Stage 4 card on "Stage FOUR."
+            Continue to Stage 5 card on "Stage FIVE."
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 8
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "After the pipeline finishes, you have a complete set…"
+
+SCROLL TO:  REAL RESULTS section — Table 1 preview and OR forest-plot bars.
+
+ACTION:     Let the results cards sit on screen through the output-files list.
+            Slowly scroll down through the five subgroup OR cards.
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 9
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "Every single file is a standard format."
+
+SCROLL TO:  ARTIFACTS / TIMELINE section.
+
+ACTION:     Slowly scroll the timeline from the Stage 1 gold dot down to the
+            final green "paper.pdf ✓" chip, pacing with the narration.
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 10
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "There are three failure modes that beginners commonly encounter."
+
+SCROLL TO:  TROUBLESHOOTING section — three fix cards.
+
+ACTION:     Hover / expand CARD 1 on "The FIRST."
+            Shift to CARD 2 on "The SECOND."
+            Shift to CARD 3 on "The THIRD."
+            Each green fix callout should be visible when you say "Fix it by…"
+
+
+─────────────────────────────────────────────────────────────────────────────
+CUE 11
+─────────────────────────────────────────────────────────────────────────────
+WHEN YOU HEAR:  "This workflow was designed for one specific constraint…"
+
+SCROLL TO:  HERO section — or HERO side-by-side with paper.pdf in Preview.
+
+ACTION:     Let the four stat counters sit silently on screen.
+            On "Thank you for watching" — scroll to VIDEO section so the
+            play button and chapter grid are visible as the last shot.
+
+
+─────────────────────────────────────────────────────────────────────────────
+END
+─────────────────────────────────────────────────────────────────────────────
+
+RECORDING TIPS
+- 1920×1080 browser window, zoom at 90% so sections don't need mid-sentence scrolling.
+- Record browser + Finder panels using QuickTime (File → New Screen Recording) or OBS.
+- Lower-third text labels recommended when switching sections, e.g. "Stage 3 — Analysis."
+- Add chapter markers in your editor (iMovie / DaVinci) matching the cue numbers above.
