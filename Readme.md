@@ -1,5 +1,17 @@
 # Midterm Project: Automatic End-to-End AI Workflow for Journal Paper Generation
 
+---
+
+## 🎓 Tutorial + Video
+
+> **[→ View the Interactive Tutorial](https://minitim222.github.io/bst236-midterm-project/tutorial/)**
+>
+> **[→ Watch the Tutorial Video on YouTube](https://youtu.be/Rdb_bQ0VkDM)**
+>
+> The tutorial walks through the full 5-stage pipeline — from one prompt to a publication-ready JAMA-style paper — with animated terminals showing real outputs, figures, and results tables. No setup required to view.
+
+---
+
 ## How to Run the Workflow
 
 ### Prerequisites
@@ -55,8 +67,9 @@ workflow/
 
 ### Tutorial
 
-- Tutorial blog post: [link TBD]
-- Tutorial video: [link TBD]
+- **Live tutorial site:** [minitim222.github.io/bst236-midterm-project/tutorial/](https://minitim222.github.io/bst236-midterm-project/tutorial/)
+- **Tutorial video:** [youtu.be/Rdb_bQ0VkDM](https://youtu.be/Rdb_bQ0VkDM) (8 min)
+- **Local preview:** open [tutorial/index.html](tutorial/index.html) in any browser
 
 ---
 
